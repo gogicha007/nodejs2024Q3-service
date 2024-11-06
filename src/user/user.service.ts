@@ -9,7 +9,12 @@ export class UserService {
   private users = [];
 
   findAll() {
-    return this.users;
+    const result = this.users.map(user=>{
+      const userCopy = JSON.parse(JSON.stringify(user))
+      delete userCopy.password
+      return userCopy
+    })
+    return result;
   }
 
   findOne(id: string) {
