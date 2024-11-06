@@ -10,7 +10,7 @@ import {
   ValidationPipe,
   HttpCode
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
