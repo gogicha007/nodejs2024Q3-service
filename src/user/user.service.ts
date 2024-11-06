@@ -6,6 +6,7 @@ export class UserService {
   private users = [];
 
   findAll() {
+    console.log('get')
     return this.users;
   }
 

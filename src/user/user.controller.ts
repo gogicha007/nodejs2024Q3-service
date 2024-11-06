@@ -2,45 +2,45 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
+  Put,
   Delete,
   Param,
   Body,
 } from '@nestjs/common';
+import { ParseUUIDPipe } from '@nestjs/common';
 import { UserService } from './user.service';
-
 
 @Controller('user')
 export class UserController {
+  constructor(private readonly userService: UserService) {}
 
-  constructor(private readonly usersService: UserService){
-
-  }
-
-  @Get() // GET /users
+  @Get()
   findAll() {
-    return this.usersService.findAll();
+    console.log('get')
+    return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.findOne(id);
   }
 
   @Post()
-  create(@Body() user: {login: string, password: string}) {
+  create(@Body() user: { login: string; password: string }) {
     console.log(user);
-    return this.usersService.create(user);
+    return this.userService.create(user);
   }
 
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() userUpdate: {login?: string, password?:string}) {
-    return this.usersService.update(id, userUpdate);
+  @Put(':id')
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() userUpdate: { login?: string; password?: string },
+  ) {
+    return this.userService.update(id, userUpdate);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return { id };
+  delete(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.delete(id);
   }
 }
