@@ -8,6 +8,7 @@ import {
   Body,
   ParseUUIDPipe,
   ValidationPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -32,7 +33,7 @@ export class TracksController {
     return this.trackServise.createTrack(createTrack);
   }
 
-  @Put()
+  @Put(':id')
   updateTrack(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(ValidationPipe) updateTrack: UpdateTrackDto,
@@ -40,8 +41,9 @@ export class TracksController {
     return this.trackServise.updateTrack(id, updateTrack);
   }
 
-  @Delete()
-  deleteTrack() {
-    return 'delete track';
+  @Delete(':id')
+  @HttpCode(204)
+  deleteTrack(@Param('id', ParseUUIDPipe) id: string) {
+    return this.trackServise.deleteTrack(id);
   }
 }

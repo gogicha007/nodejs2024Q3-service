@@ -38,5 +38,14 @@ export class TracksService {
   updateTrack(id: string, updateTrack: UpdateTrackDto) {
     const trackIdx = this.tracks.findIndex((track) => track.id === id);
     if (trackIdx === -1) throw new NotFoundException('Track not found');
+    this.tracks[trackIdx] = {
+      ...this.tracks[trackIdx],
+      ...updateTrack,
+    };
+    return this.findOne(id)
+  }
+
+  deleteTrack(id: string){
+    return 'delete track'
   }
 }
