@@ -2,12 +2,14 @@ import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class ArtistsService {
   private artists = [];
 
   findAll() {
+    console.log()
     return this.artists;
   }
 
@@ -29,10 +31,10 @@ export class ArtistsService {
   }
 
   updateArtist(id: string, updateArtist: UpdateArtistDto) {
-    const trackIdx = this.artists.findIndex((track) => track.id === id);
-    if (trackIdx === -1) throw new NotFoundException('Track not found');
-    this.artists[trackIdx] = {
-      ...this.artists[trackIdx],
+    const artistIdx = this.artists.findIndex((track) => track.id === id);
+    if (artistIdx === -1) throw new NotFoundException('Artist not found');
+    this.artists[artistIdx] = {
+      ...this.artists[artistIdx],
       ...updateArtist,
     };
     return this.findOne(id);
@@ -40,8 +42,9 @@ export class ArtistsService {
 
   deleteArtist(id: string) {
     const removedArtist = this.findOne(id);
-    if (!removedArtist) throw new NotFoundException('Track not found');
+    if (!removedArtist) throw new NotFoundException('Artist not found');
     this.artists = this.artists.filter((track) => track.id !== id);
+
     return removedArtist;
   }
 }
