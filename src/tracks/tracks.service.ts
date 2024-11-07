@@ -42,10 +42,13 @@ export class TracksService {
       ...this.tracks[trackIdx],
       ...updateTrack,
     };
-    return this.findOne(id)
+    return this.findOne(id);
   }
 
-  deleteTrack(id: string){
-    return 'delete track'
+  deleteTrack(id: string) {
+    const removedTrack = this.findOne(id);
+    if (!removedTrack) throw new NotFoundException('Track not found');
+    this.tracks = this.tracks.filter((track) => track.id !== id);
+    return removedTrack;
   }
 }
