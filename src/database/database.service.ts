@@ -8,7 +8,7 @@ export class DatabaseService {
     tracks: [],
     favorites: {
       artists: [],
-      albumg: [],
+      albums: [],
       tracks: [],
     },
   };

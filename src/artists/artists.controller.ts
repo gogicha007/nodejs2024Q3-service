@@ -24,7 +24,7 @@ export class ArtistsController {
     }
   
     @Get(':id')
-    findOnde(@Param('id', ParseUUIDPipe) id: string) {
+    findOne(@Param('id', ParseUUIDPipe) id: string) {
       return this.artistsService.findOne(id);
     }
   

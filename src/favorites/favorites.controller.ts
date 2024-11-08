@@ -19,6 +19,7 @@ export class FavoritesController {
   }
 
   @Post('track/:id')
+  @HttpCode(201)
   addTrack(@Param('id', ParseUUIDPipe) id: string) {
     return this.favoritesService.addTrack(id);
   }

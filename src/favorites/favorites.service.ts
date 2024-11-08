@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
@@ -11,8 +11,9 @@ export class FavoritesService {
 
   addTrack(id: string) {
     const track = this.dbService.data.tracks.find((track) => track.id === id);
-    if (!track) throw new NotFoundException('Track not found');
-    return 'add track';
+    if (!track) throw new UnprocessableEntityException('Track not found');
+    this.dbService.data.favorites.tracks.push(track)
+    return track;
   }
 
   removeTrack(id: string) {
@@ -21,8 +22,9 @@ export class FavoritesService {
 
   addAlbum(id: string) {
     const album = this.dbService.data.albums.find((album) => album.id === id);
-    if (!album) throw new NotFoundException('Album not found');
-    return 'add album';
+    if (!album) throw new UnprocessableEntityException('Album not found');
+    this.dbService.data.favorites.albums.push(album)
+    return album;
   }
 
   removeAlbum(id: string) {
@@ -31,8 +33,9 @@ export class FavoritesService {
 
   addArtist(id: string) {
     const artist = this.dbService.data.artists.find((artist) => artist.id === id);
-    if (!artist) throw new NotFoundException('Artist not found');
-    return 'add artist';
+    if (!artist) throw new UnprocessableEntityException('Artist not found');
+    this.dbService.data.favorites.artists.push(artist)
+    return artist;
   }
 
   removeArtist(id: string) {
