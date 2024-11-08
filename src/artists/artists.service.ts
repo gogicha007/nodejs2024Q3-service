@@ -8,8 +8,6 @@ import { DatabaseService } from 'src/database/database.service';
 export class ArtistsService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  // private artists = [];
-
   findAll() {
     console.log(this.dbService.data);
     return this.dbService.data.artists;
@@ -52,6 +50,9 @@ export class ArtistsService {
     );
     this.dbService.data.tracks.map((track) => {
       if (track.artistId === removedArtist.id) track.artistId = null;
+    });
+    this.dbService.data.albums.map((album) => {
+      if (album.artistId === removedArtist.id) album.artistId = null;
     });
     return removedArtist;
   }
