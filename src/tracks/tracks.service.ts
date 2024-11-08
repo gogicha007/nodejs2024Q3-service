@@ -8,8 +8,6 @@ import { DatabaseService } from 'src/database/database.service';
 export class TracksService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  // private tracks = [];
-
   findAll() {
     console.log(this.dbService.data);
     return this.dbService.data.tracks;

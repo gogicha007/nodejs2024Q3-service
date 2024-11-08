@@ -7,7 +7,6 @@ import { DatabaseService } from 'src/database/database.service';
 @Injectable()
 export class AlbumsService {
   constructor(private readonly dbService: DatabaseService) {}
-  // public albums = [];
 
   findAll() {
     return this.dbService.data.albums;

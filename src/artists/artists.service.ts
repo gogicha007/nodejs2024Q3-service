@@ -48,9 +48,11 @@ export class ArtistsService {
     const removedArtist = this.findOne(id);
     if (!removedArtist) throw new NotFoundException('Artist not found');
     this.dbService.data.artists = this.dbService.data.artists.filter(
-      (track) => track.id !== id,
+      (artist) => artist.id !== id,
     );
-
+    this.dbService.data.tracks.map((track) => {
+      if (track.artistId === removedArtist.id) track.artistId = null;
+    });
     return removedArtist;
   }
 }
