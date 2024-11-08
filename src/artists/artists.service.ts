@@ -2,19 +2,21 @@ import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { TracksService } from 'src/tracks/tracks.service';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class ArtistsService {
-  private artists = [];
+  constructor(private readonly dbService: DatabaseService) {}
+
+  // private artists = [];
 
   findAll() {
-    console.log()
-    return this.artists;
+    console.log(this.dbService.data);
+    return this.dbService.data.artists;
   }
 
   findOne(id: string) {
-    const track = this.artists.find((track) => track.id === id);
+    const track = this.dbService.data.artists.find((track) => track.id === id);
     if (!track) throw new NotFoundException('Track not found');
     return track;
   }
@@ -26,15 +28,17 @@ export class ArtistsService {
       name: createArtist.name,
       grammy: createArtist.grammy,
     };
-    this.artists.push(newTrack);
+    this.dbService.data.artists.push(newTrack);
     return newTrack;
   }
 
   updateArtist(id: string, updateArtist: UpdateArtistDto) {
-    const artistIdx = this.artists.findIndex((track) => track.id === id);
+    const artistIdx = this.dbService.data.artists.findIndex(
+      (track) => track.id === id,
+    );
     if (artistIdx === -1) throw new NotFoundException('Artist not found');
-    this.artists[artistIdx] = {
-      ...this.artists[artistIdx],
+    this.dbService.data.artists[artistIdx] = {
+      ...this.dbService.data.artists[artistIdx],
       ...updateArtist,
     };
     return this.findOne(id);
@@ -43,7 +47,9 @@ export class ArtistsService {
   deleteArtist(id: string) {
     const removedArtist = this.findOne(id);
     if (!removedArtist) throw new NotFoundException('Artist not found');
-    this.artists = this.artists.filter((track) => track.id !== id);
+    this.dbService.data.artists = this.dbService.data.artists.filter(
+      (track) => track.id !== id,
+    );
 
     return removedArtist;
   }

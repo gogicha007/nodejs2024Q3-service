@@ -1,21 +1,22 @@
-import {
-  NotFoundException,
-  Injectable,
-} from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class TracksService {
-  private tracks = [];
+  constructor(private readonly dbService: DatabaseService) {}
+
+  // private tracks = [];
 
   findAll() {
-    return this.tracks;
+    console.log(this.dbService.data);
+    return this.dbService.data.tracks;
   }
 
   findOne(id: string) {
-    const track = this.tracks.find((track) => track.id === id);
+    const track = this.dbService.data.tracks.find((track) => track.id === id);
     if (!track) throw new NotFoundException('Track not found');
     return track;
   }
@@ -29,15 +30,17 @@ export class TracksService {
       albumId: createTrack.albumId ? createTrack.albumId : null,
       duration: createTrack.duration,
     };
-    this.tracks.push(newTrack);
+    this.dbService.data.tracks.push(newTrack);
     return newTrack;
   }
 
   updateTrack(id: string, updateTrack: UpdateTrackDto) {
-    const trackIdx = this.tracks.findIndex((track) => track.id === id);
+    const trackIdx = this.dbService.data.tracks.findIndex(
+      (track) => track.id === id,
+    );
     if (trackIdx === -1) throw new NotFoundException('Track not found');
-    this.tracks[trackIdx] = {
-      ...this.tracks[trackIdx],
+    this.dbService.data.tracks[trackIdx] = {
+      ...this.dbService.data.tracks[trackIdx],
       ...updateTrack,
     };
     return this.findOne(id);
@@ -46,7 +49,9 @@ export class TracksService {
   deleteTrack(id: string) {
     const removedTrack = this.findOne(id);
     if (!removedTrack) throw new NotFoundException('Track not found');
-    this.tracks = this.tracks.filter((track) => track.id !== id);
+    this.dbService.data.tracks = this.dbService.data.tracks.filter(
+      (track) => track.id !== id,
+    );
     return removedTrack;
   }
 }
