@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DatabaseService {
-    public data = {
-        artists: [],
-        albums: [],
-        tracks: [],
-        favorites: [],
-    }
+  public data = {
+    artists: [],
+    albums: [],
+    tracks: [],
+    favorites: {
+      artists: [],
+      albumg: [],
+      tracks: [],
+    },
+  };
 }

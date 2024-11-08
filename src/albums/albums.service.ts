@@ -46,8 +46,11 @@ export class AlbumsService {
     const removedAlbum = this.findOne(id);
     if (!removedAlbum) throw new NotFoundException('Album not found');
     this.dbService.data.albums = this.dbService.data.albums.filter(
-      (track) => track.id !== id,
+      (album) => album.id !== id,
     );
+    this.dbService.data.tracks.map((track) => {
+      if (track.albumId === removedAlbum.id) track.albumId = null;
+    });
     return removedAlbum;
   }
 }
