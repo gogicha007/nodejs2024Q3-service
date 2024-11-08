@@ -25,7 +25,7 @@ export class AlbumsService {
       id: id,
       name: createAlbum.name,
       year: createAlbum.year,
-      artistId: createAlbum.artistId,
+      artistId: createAlbum.artistId ? createAlbum.artistId : null,
     };
     this.dbService.data.albums.push(newTrack);
     return newTrack;

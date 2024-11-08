@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { data } from 'src/data';
 
 
 @Injectable()
