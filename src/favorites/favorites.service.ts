@@ -10,7 +10,21 @@ export class FavoritesService {
   constructor(private readonly dbService: DatabaseService) {}
 
   getAllFavs() {
-    return this.dbService.data.favorites;
+    // const array = [];
+    const result = Object.keys(this.dbService.data.favorites).reduce(
+      (acc, val) => {
+        const array = this.dbService.data.favorites[val].map((e: any) => {
+          const eCopy = JSON.parse(JSON.stringify(e));
+          delete eCopy.id;
+          return eCopy;
+        });
+        acc[val] = array;
+        return acc;
+      },
+      {},
+    );
+    console.log(result);
+    return result;
   }
 
   addTrack(id: string) {
@@ -45,7 +59,7 @@ export class FavoritesService {
     const albumToRemove = this.dbService.data.favorites.albums.find(
       (album) => album.id === id,
     );
-    if (!albumToRemove) throw new NotFoundException('Track not found');
+    if (!albumToRemove) throw new NotFoundException('Album not found');
     this.dbService.data.favorites.albums =
       this.dbService.data.favorites.albums.filter((album) => album.id !== id);
     return albumToRemove;
@@ -64,7 +78,7 @@ export class FavoritesService {
     const artistToRemove = this.dbService.data.favorites.artists.find(
       (artist) => artist.id === id,
     );
-    if (!artistToRemove) throw new NotFoundException('Track not found');
+    if (!artistToRemove) throw new NotFoundException('Artist not found');
     this.dbService.data.favorites.artists =
       this.dbService.data.favorites.artists.filter(
         (artist) => artist.id !== id,
