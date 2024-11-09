@@ -10,7 +10,6 @@ export class FavoritesService {
   constructor(private readonly dbService: DatabaseService) {}
 
   getAllFavs() {
-    // const array = [];
     const result = Object.keys(this.dbService.data.favorites).reduce(
       (acc, val) => {
         const array = this.dbService.data.favorites[val].map((e: any) => {
@@ -23,7 +22,6 @@ export class FavoritesService {
       },
       {},
     );
-    console.log(result);
     return result;
   }
 
