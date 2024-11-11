@@ -14,7 +14,6 @@ export class FavoritesService {
       (acc, val) => {
         const array = this.dbService.data.favorites[val].map((e: any) => {
           const eCopy = JSON.parse(JSON.stringify(e));
-          delete eCopy.id;
           return eCopy;
         });
         acc[val] = array;
