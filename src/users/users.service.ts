@@ -14,13 +14,21 @@ export class UserService {
       delete userCopy.password
       return userCopy
     })
+    console.log(this.users)
     return result;
   }
 
   findOne(id: string) {
     const user = this.users.find((user) => user.id === id);
     if (!user) throw new NotFoundException('User not found');
-    return user;
+    const res = {
+      id: user.id,
+      login: user.login,
+      version: user.version,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    }
+    return res;
   }
 
   create(createUser: CreateUserDto) {
@@ -29,17 +37,23 @@ export class UserService {
       id: id,
       login: createUser.login,
       password: createUser.password,
-      version: 0,
+      version: 1,
       createdAt: new Date().getTime(),
       updatedAt: new Date().getTime(),
     };
     this.users.push(newUser);
-    return newUser;
+    const res = {
+      id: id,
+      login: newUser.login,
+      version: newUser.version,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt
+    }
+    return res;
   }
 
   update(id: string, updatedPassword: UpdatePasswordDto) {
     const userIdx = this.users.findIndex((user) => user.id === id);
-
     if (userIdx === -1) throw new NotFoundException('User not found');
     if (this.users[userIdx].password !== updatedPassword.oldPassword)
       throw new HttpException('Old password is wrong', HttpStatus.FORBIDDEN);
