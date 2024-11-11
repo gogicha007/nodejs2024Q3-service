@@ -23,6 +23,10 @@ npm install
 git checkout dev
 ```
 
+## .env
+
+rename .env.example to .env
+
 ## Running application
 ```
 npm start
