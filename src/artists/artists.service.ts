@@ -54,6 +54,10 @@ export class ArtistsService {
     this.dbService.data.albums.map((album) => {
       if (album.artistId === removedArtist.id) album.artistId = null;
     });
+    this.dbService.data.favorites.artists =
+      this.dbService.data.favorites.artists.filter(
+        (artist) => artist.id !== removedArtist.id,
+      );
     return removedArtist;
   }
 }

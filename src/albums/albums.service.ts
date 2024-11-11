@@ -51,6 +51,10 @@ export class AlbumsService {
     this.dbService.data.tracks.map((track) => {
       if (track.albumId === removedAlbum.id) track.albumId = null;
     });
+    this.dbService.data.favorites.albums =
+      this.dbService.data.favorites.albums.filter(
+        (album) => album.id !== removedAlbum.id,
+      );
     return removedAlbum;
   }
 }

@@ -50,6 +50,10 @@ export class TracksService {
     this.dbService.data.tracks = this.dbService.data.tracks.filter(
       (track) => track.id !== id,
     );
+    this.dbService.data.favorites.tracks =
+    this.dbService.data.favorites.tracks.filter(
+      (track) => track.id !== removedTrack.id,
+    );
     return removedTrack;
   }
 }
