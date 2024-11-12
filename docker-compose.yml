@@ -7,9 +7,10 @@ services:
     environment:
       env_file: ".env"
     ports:
-      - 4000:4000
+      - ${PORT}:${PORT}
     volumes:
       - .:/app
       - /app/node_modules
     command: "npm run start:dev"
+    restart: on-failure
       
