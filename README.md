@@ -17,6 +17,12 @@ git clone {repository URL}
 npm install
 ```
 
+in case if swagger causes an error install it with the command: 
+
+```
+npm install @nestjs/swagger --force
+```
+
 ## change repository branch
 
 ```
