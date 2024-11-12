@@ -1,0 +1,15 @@
+services:
+  app:
+    container_name: home_lib_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      env_file: ".env"
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: "npm run start:dev"
+      
