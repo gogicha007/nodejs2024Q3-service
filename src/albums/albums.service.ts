@@ -1,15 +1,28 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateAlbumDto } from './dto/create-album.dto';
-import { UpdateAlbumDto } from './dto/update-album.dto';
 import { DatabaseService } from 'src/database/database.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AlbumsService {
   constructor(private readonly dbService: DatabaseService) {}
 
+  createAlbum(createAlbum: Prisma.AlbumCreateInput) {
+    const id = uuidv4();
+    const newTrack = {
+      id: id,
+      name: createAlbum.name,
+      year: createAlbum.year,
+      artistId: createAlbum.artistId ? createAlbum.artistId : null,
+    };
+    this.dbService.album.create({
+      data: newTrack,
+    });
+    return newTrack;
+  }
+
   findAll() {
-    return this.dbService.data.albums;
+    return this.dbService.album.findMany();
   }
 
   findOne(id: string) {
@@ -18,19 +31,7 @@ export class AlbumsService {
     return album;
   }
 
-  createAlbum(createAlbum: CreateAlbumDto) {
-    const id = uuidv4();
-    const newTrack = {
-      id: id,
-      name: createAlbum.name,
-      year: createAlbum.year,
-      artistId: createAlbum.artistId ? createAlbum.artistId : null,
-    };
-    this.dbService.data.albums.push(newTrack);
-    return newTrack;
-  }
-
-  updateAlbum(id: string, updateAlbum: UpdateAlbumDto) {
+  updateAlbum(id: string, updateAlbum: Prisma.AlbumUpdateInput) {
     const albumIdx = this.dbService.data.albums.findIndex(
       (album) => album.id === id,
     );

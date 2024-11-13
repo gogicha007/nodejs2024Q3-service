@@ -8,8 +8,9 @@ import {
     Body,
     ParseUUIDPipe,
     ValidationPipe,
-    HttpCode,
+    HttpCode
   } from '@nestjs/common';
+  import { Prisma } from '@prisma/client';
   import { AlbumsService } from './albums.service';
   import { CreateAlbumDto } from './dto/create-album.dto';
   import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -29,14 +30,14 @@ export class AlbumsController {
     }
   
     @Post()
-    createAlbum(@Body(ValidationPipe) createAlbum: CreateAlbumDto) {
+    createAlbum(@Body(ValidationPipe) createAlbum: Prisma.AlbumCreateInput) {
       return this.albumsService.createAlbum(createAlbum);
     }
   
     @Put(':id')
     updateAlbum(
       @Param('id', ParseUUIDPipe) id: string,
-      @Body(ValidationPipe) updateAlbum: UpdateAlbumDto,
+      @Body(ValidationPipe) updateAlbum: Prisma.AlbumUpdateInput,
     ) {
       return this.albumsService.updateAlbum(id, updateAlbum);
     }
