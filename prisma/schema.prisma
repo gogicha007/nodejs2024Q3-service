@@ -44,6 +44,7 @@ model Album {
 }
 
 model Faforites {
+  id Int @id @default(1)
   artists String[]
   albums String[]
   tracks String[]
