@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: "npm run start"
+    # command: "npm run start"
     restart: on-failure
 
   postgres:

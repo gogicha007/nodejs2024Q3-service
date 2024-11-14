@@ -1,25 +1,13 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
+import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class TracksService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  findAll() {
-    console.log(this.dbService.data);
-    return this.dbService.data.tracks;
-  }
-
-  findOne(id: string) {
-    const track = this.dbService.data.tracks.find((track) => track.id === id);
-    if (!track) throw new NotFoundException('Track not found');
-    return track;
-  }
-
-  createTrack(createTrack: CreateTrackDto) {
+  async createTrack(createTrack: Prisma.TrackCreateInput) {
     const id = uuidv4();
     const newTrack = {
       id: id,
@@ -28,32 +16,65 @@ export class TracksService {
       albumId: createTrack.albumId ? createTrack.albumId : null,
       duration: createTrack.duration,
     };
-    this.dbService.data.tracks.push(newTrack);
+    await this.dbService.track.create({ data: newTrack });
     return newTrack;
   }
 
-  updateTrack(id: string, updateTrack: UpdateTrackDto) {
-    const trackIdx = this.dbService.data.tracks.findIndex(
-      (track) => track.id === id,
-    );
-    if (trackIdx === -1) throw new NotFoundException('Track not found');
-    this.dbService.data.tracks[trackIdx] = {
-      ...this.dbService.data.tracks[trackIdx],
+  async findAll() {
+    return this.dbService.track.findMany();
+  }
+
+  async findOne(id: string) {
+    const track = await this.dbService.track.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!track) throw new NotFoundException('Track not found');
+    return track;
+  }
+
+  async updateTrack(id: string, updateTrack: Prisma.TrackUpdateInput) {
+    const theTrack = await this.findOne(id);
+    if (!theTrack) throw new NotFoundException('Track not found');
+
+    const updateData = {
+      ...theTrack,
       ...updateTrack,
     };
+    await this.dbService.track.update({
+      where: {
+        id,
+      },
+      data: updateData,
+    });
     return this.findOne(id);
   }
 
-  deleteTrack(id: string) {
-    const removedTrack = this.findOne(id);
+  async deleteTrack(id: string) {
+    const removedTrack = await this.findOne(id);
     if (!removedTrack) throw new NotFoundException('Track not found');
-    this.dbService.data.tracks = this.dbService.data.tracks.filter(
-      (track) => track.id !== id,
-    );
-    this.dbService.data.favorites.tracks =
-    this.dbService.data.favorites.tracks.filter(
-      (track) => track.id !== removedTrack.id,
-    );
+    await this.dbService.track.delete({
+      where: {
+        id,
+      }
+    })
+
+    // update favorites
+    const tracksArr = await this.dbService.favorites.findFirst({
+      select: {
+        tracks: true,
+      },
+    });
+
+    await this.dbService.favorites.update({
+      where: {
+        id: 0,
+      },
+      data: {
+        albums: tracksArr.tracks.filter((albId) => albId !== removedTrack.id),
+      },
+    });
     return removedTrack;
   }
 }

@@ -43,7 +43,7 @@ model Album {
   artistId String?
 }
 
-model Faforites {
+model Favorites {
   id      Int      @id @default(0)
   artists String[]
   albums  String[]

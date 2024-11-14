@@ -10,6 +10,7 @@ import {
     ValidationPipe,
     HttpCode,
   } from '@nestjs/common';
+  import { Prisma } from '@prisma/client';
   import { ArtistsService } from './artists.service';
   import { CreateArtistDto } from './dto/create-artist.dto';
   import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -17,6 +18,11 @@ import {
 @Controller('artist')
 export class ArtistsController {
     constructor(private readonly artistsService: ArtistsService) {}
+
+    @Post()
+    createTrack(@Body(ValidationPipe) createTrack: Prisma.ArtistCreateInput) {
+      return this.artistsService.createArtist(createTrack);
+    }
 
     @Get()
     findAll() {
@@ -27,16 +33,11 @@ export class ArtistsController {
     findOne(@Param('id', ParseUUIDPipe) id: string) {
       return this.artistsService.findOne(id);
     }
-  
-    @Post()
-    createTrack(@Body(ValidationPipe) createTrack: CreateArtistDto) {
-      return this.artistsService.createArtist(createTrack);
-    }
-  
+    
     @Put(':id')
     updateTrack(
       @Param('id', ParseUUIDPipe) id: string,
-      @Body(ValidationPipe) updateTrack: UpdateArtistDto,
+      @Body(ValidationPipe) updateTrack: Prisma.ArtistUpdateInput,
     ) {
       return this.artistsService.updateArtist(id, updateTrack);
     }

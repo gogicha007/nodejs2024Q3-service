@@ -9,27 +9,27 @@ import { DatabaseService } from 'src/database/database.service';
 export class FavoritesService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  getAllFavs() {
-    const result = Object.keys(this.dbService.data.favorites).reduce(
-      (acc, val) => {
-        const array = this.dbService.data.favorites[val].map((e: any) => {
-          const eCopy = JSON.parse(JSON.stringify(e));
-          return eCopy;
-        });
-        acc[val] = array;
-        return acc;
-      },
-      {},
-    );
-    return result;
+  async getAllFavs() {
+    return await this.dbService.favorites.findMany();
   }
 
-  addTrack(id: string) {
-    const trackToAdd = this.dbService.data.tracks.find(
-      (track) => track.id === id,
-    );
+  async addTrack(id: string) {
+    const trackToAdd = await this.dbService.track.findUnique({
+      where: {
+        id,
+      },
+    });
     if (!trackToAdd) throw new UnprocessableEntityException('Track not found');
-    this.dbService.data.favorites.tracks.push(trackToAdd);
+    await this.dbService.favorites.update({
+      where: {
+        id: 0,
+      }, 
+      data: {
+        tracks: {
+          push: id,
+        }
+      }
+    })
     return trackToAdd;
   }
 
@@ -43,12 +43,23 @@ export class FavoritesService {
     return trackToRemove;
   }
 
-  addAlbum(id: string) {
-    const albumToAdd = this.dbService.data.albums.find(
-      (album) => album.id === id,
-    );
+  async addAlbum(id: string) {
+    const albumToAdd = this.dbService.album.findUnique({
+      where: {
+        id,
+      }
+    });
     if (!albumToAdd) throw new UnprocessableEntityException('Album not found');
-    this.dbService.data.favorites.albums.push(albumToAdd);
+    await this.dbService.favorites.update({
+      where: {
+        id: 0,
+      }, 
+      data: {
+        albums: {
+          push: id,
+        }
+      }
+    })
     return albumToAdd;
   }
 
@@ -62,13 +73,22 @@ export class FavoritesService {
     return albumToRemove;
   }
 
-  addArtist(id: string) {
-    const artist = this.dbService.data.artists.find(
+  async addArtist(id: string) {
+    const artistToAdd = this.dbService.data.artists.find(
       (artist) => artist.id === id,
     );
-    if (!artist) throw new UnprocessableEntityException('Artist not found');
-    this.dbService.data.favorites.artists.push(artist);
-    return artist;
+    if (!artistToAdd) throw new UnprocessableEntityException('Artist not found');
+    await this.dbService.favorites.update({
+      where: {
+        id: 0
+      },
+      data: {
+        artists: {
+          push: id,
+        }
+      }
+    });
+    return artistToAdd;
   }
 
   removeArtist(id: string) {

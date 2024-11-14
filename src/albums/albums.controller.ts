@@ -12,12 +12,15 @@ import {
   } from '@nestjs/common';
   import { Prisma } from '@prisma/client';
   import { AlbumsService } from './albums.service';
-  import { CreateAlbumDto } from './dto/create-album.dto';
-  import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Controller('album')
 export class AlbumsController {
     constructor(private readonly albumsService: AlbumsService) {}
+
+    @Post()
+    createAlbum(@Body(ValidationPipe) createAlbum: Prisma.AlbumCreateInput) {
+      return this.albumsService.createAlbum(createAlbum);
+    }
 
     @Get()
     findAll() {
@@ -27,11 +30,6 @@ export class AlbumsController {
     @Get(':id')
     findOnde(@Param('id', ParseUUIDPipe) id: string) {
       return this.albumsService.findOne(id);
-    }
-  
-    @Post()
-    createAlbum(@Body(ValidationPipe) createAlbum: Prisma.AlbumCreateInput) {
-      return this.albumsService.createAlbum(createAlbum);
     }
   
     @Put(':id')
