@@ -72,7 +72,7 @@ export class TracksService {
         id: 0,
       },
       data: {
-        albums: tracksArr.tracks.filter((albId) => albId !== removedTrack.id),
+        albums: tracksArr.tracks.filter((trkId) => trkId !== removedTrack.id),
       },
     });
     return removedTrack;
