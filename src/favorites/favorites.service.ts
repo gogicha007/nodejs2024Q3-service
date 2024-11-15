@@ -10,7 +10,18 @@ export class FavoritesService {
   constructor(private readonly dbService: DatabaseService) {}
 
   async getAllFavs() {
-    return await this.dbService.favorites.findMany();
+    const allFavs = await this.dbService.favorites.findMany();
+    const result = Object.keys(allFavs[0])
+      .filter((key) => key !== 'id')
+      .reduce((acc, val) => {
+        const array = allFavs[0][val].map((e: any) => {
+          const eCopy = JSON.parse(e);
+          return eCopy;
+        });
+        acc[val] = array;
+        return acc;
+      }, {});
+    return result;
   }
 
   async addTrack(id: string) {
@@ -26,7 +37,7 @@ export class FavoritesService {
       },
       data: {
         tracks: {
-          push: id,
+          push: JSON.stringify(trackToAdd),
         },
       },
     });
@@ -52,14 +63,14 @@ export class FavoritesService {
         id: 0,
       },
       data: {
-        albums: tracksArr.tracks.filter((albId) => albId !== id),
+        tracks: tracksArr.tracks.filter((track) => JSON.parse(track).id !== id),
       },
     });
     return trackToRemove;
   }
 
   async addAlbum(id: string) {
-    const albumToAdd = this.dbService.album.findUnique({
+    const albumToAdd = await this.dbService.album.findUnique({
       where: {
         id,
       },
@@ -71,7 +82,7 @@ export class FavoritesService {
       },
       data: {
         albums: {
-          push: id,
+          push: JSON.stringify(albumToAdd),
         },
       },
     });
@@ -96,14 +107,14 @@ export class FavoritesService {
         id: 0,
       },
       data: {
-        albums: albumsArr.albums.filter((albId) => albId !== id),
+        albums: albumsArr.albums.filter((album) => JSON.parse(album).id !== id),
       },
     });
     return albumToRemove;
   }
 
   async addArtist(id: string) {
-    const artistToAdd = this.dbService.artist.findUnique({
+    const artistToAdd = await this.dbService.artist.findUnique({
       where: {
         id,
       },
@@ -116,7 +127,7 @@ export class FavoritesService {
       },
       data: {
         artists: {
-          push: id,
+          push: JSON.stringify(artistToAdd),
         },
       },
     });
@@ -124,7 +135,7 @@ export class FavoritesService {
   }
 
   async removeArtist(id: string) {
-    const artistToRemove = this.dbService.artist.findUnique({
+    const artistToRemove = await this.dbService.artist.findUnique({
       where: {
         id,
       },
@@ -141,7 +152,7 @@ export class FavoritesService {
         id: 0,
       },
       data: {
-        artists: artistsArr.artists.filter((artId) => artId !== id),
+        artists: artistsArr.artists.filter((artist) => JSON.parse(artist).id !== id),
       },
     });
     return artistToRemove;

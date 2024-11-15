@@ -2,12 +2,14 @@ import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
+import { CreateTrackDto } from './dto/create-track.dto';
+import { UpdateTrackDto } from './dto/update-track.dto';
 
 @Injectable()
 export class TracksService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  async createTrack(createTrack: Prisma.TrackCreateInput) {
+  async createTrack(createTrack: CreateTrackDto) {
     const id = uuidv4();
     const newTrack = {
       id: id,
@@ -72,7 +74,7 @@ export class TracksService {
         id: 0,
       },
       data: {
-        albums: tracksArr.tracks.filter((trkId) => trkId !== removedTrack.id),
+        tracks: tracksArr.tracks.filter((trk) => JSON.parse(trk).id !== id),
       },
     });
     return removedTrack;

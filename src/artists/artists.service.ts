@@ -2,12 +2,14 @@ import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
+import { CreateArtistDto } from './dto/create-artist.dto';
+import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Injectable()
 export class ArtistsService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  async createArtist(createArtist: Prisma.ArtistCreateInput) {
+  async createArtist(createArtist: CreateArtistDto) {
     const id = uuidv4();
     const newArtist = {
       id: id,
@@ -34,7 +36,7 @@ export class ArtistsService {
     return artist;
   }
 
-  async updateArtist(id: string, updateArtist: Prisma.ArtistUpdateInput) {
+  async updateArtist(id: string, updateArtist: UpdateArtistDto) {
     const theArtist = await this.findOne(id);
     if (!theArtist) throw new NotFoundException('Artist not found');
     const updateData = {
@@ -69,7 +71,7 @@ export class ArtistsService {
     });
 
     // update albums
-    this.dbService.album.updateMany({
+    await this.dbService.album.updateMany({
       where: {
         artistId: id,
       },
@@ -89,7 +91,7 @@ export class ArtistsService {
         id: 0,
       },
       data: {
-        artists: artistsArr.artists.filter((artId) => artId !== id),
+        artists: artistsArr.artists.filter((arts) => JSON.parse(arts).id !== id),
       },
     });
     return removedArtist;

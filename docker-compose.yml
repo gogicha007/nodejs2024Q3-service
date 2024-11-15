@@ -11,10 +11,11 @@ services:
     ports:
       - ${PORT}:${PORT}
     volumes:
-      - .:/app
+      # - .:/app
+      - ./src:/src
       - /app/node_modules
-    # command: "npm run start"
-    restart: on-failure
+    command: "npm run start:migrate:dev"
+    restart: always
 
   postgres:
     image: postgres

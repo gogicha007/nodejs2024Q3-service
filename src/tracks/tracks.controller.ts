@@ -20,7 +20,7 @@ export class TracksController {
   constructor(private readonly trackServise: TracksService) {}
 
   @Post()
-  createTrack(@Body(ValidationPipe) createTrack: Prisma.TrackCreateInput) {
+  createTrack(@Body(ValidationPipe) createTrack: CreateTrackDto) {
     return this.trackServise.createTrack(createTrack);
   }
 
@@ -38,7 +38,7 @@ export class TracksController {
   @Put(':id')
   updateTrack(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body(ValidationPipe) updateTrack: Prisma.TrackUpdateInput,
+    @Body(ValidationPipe) updateTrack: UpdateTrackDto,
   ) {
     return this.trackServise.updateTrack(id, updateTrack);
   }
