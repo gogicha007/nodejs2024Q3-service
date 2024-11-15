@@ -16,7 +16,8 @@ services:
       - /app/node_modules
     command: "npm run start:migrate:dev"
     restart: always
-
+    networks:
+      - rest-library
   postgres:
     image: postgres
     restart: always
@@ -32,6 +33,12 @@ services:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - rest-library
 
+  
 volumes:
   pgdata:
+
+networks:
+  rest-library:
