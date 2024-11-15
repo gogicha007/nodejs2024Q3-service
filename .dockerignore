@@ -5,4 +5,4 @@ npm-debug.log
 .gitignore
 .prettierrc
 Dockerfile
-README.md
+*.md

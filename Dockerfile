@@ -13,12 +13,8 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 
-# COPY prisma ./prisma/
-# RUN npx prisma generate --schema=./prisma/schema.prisma
 RUN npx prisma generate 
 
 # EXPOSE 3333
-# RUN npm run build
 # CMD ["npm", "run", "start:migrate:prod"]
 CMD ["npm", "run", "start:migrate:dev"]
-# CMD ["npm", "run", "watch"]

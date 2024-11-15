@@ -18,6 +18,7 @@ services:
     restart: always
     networks:
       - rest-library
+      
   postgres:
     image: postgres
     restart: always
