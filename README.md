@@ -1,4 +1,8 @@
-# Home Library Service 1
+# Home Library Service 2
+
+images uploaded to my docker hub :
+
+![alt text](image.png)
 
 ## Prerequisites
 
@@ -17,16 +21,10 @@ git clone {repository URL}
 npm install
 ```
 
-in case if swagger causes an error install it with the command: 
-
-```
-npm install @nestjs/swagger --force
-```
-
 ## change repository branch
 
 ```
-git checkout dev
+git checkout dev_hl_2
 ```
 
 ## .env
@@ -34,12 +32,14 @@ git checkout dev
 rename .env.example to .env
 
 ## Running application
+
 ```
-npm start
+docker compose build
+
+docker compose up
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+This will run 2 docker containers - one with Postgres database, another with NestJS application on ports from .env.
 
 ## Testing
 
