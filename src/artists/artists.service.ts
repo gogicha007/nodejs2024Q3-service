@@ -60,6 +60,7 @@ export class ArtistsService {
         id,
       },
     });
+
     // update tracks
     await this.dbService.track.updateMany({
       where: {

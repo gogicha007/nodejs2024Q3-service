@@ -2,8 +2,9 @@ services:
   app:
     container_name: home_lib_container
     build:
-      context: .
       dockerfile: Dockerfile
+      context: .
+      target: development
     depends_on:
       - postgres
     environment:
@@ -11,13 +12,12 @@ services:
     ports:
       - ${PORT}:${PORT}
     volumes:
-      # - .:/app
-      - ./src:/src
+      - .:/app
       - /app/node_modules
-    command: "npm run start:migrate:dev"
+    command: npm run start:migrate:dev
     restart: always
     networks:
-      - rest-library
+      - home-library
       
   postgres:
     image: postgres
@@ -35,11 +35,11 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - rest-library
+      - home-library
 
   
 volumes:
   pgdata:
 
 networks:
-  rest-library:
+  home-library:
