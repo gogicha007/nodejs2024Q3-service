@@ -24,7 +24,7 @@ npm install
 ## change repository branch
 
 ```
-git checkout dev_hl_2
+git checkout dev_hl_3
 ```
 
 ## .env
