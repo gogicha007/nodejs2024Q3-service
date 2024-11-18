@@ -36,7 +36,7 @@ export class TracksService {
     return track;
   }
 
-  async updateTrack(id: string, updateTrack: Prisma.TrackUpdateInput) {
+  async updateTrack(id: string, updateTrack: UpdateTrackDto) {
     const theTrack = await this.findOne(id);
     if (!theTrack) throw new NotFoundException('Track not found');
 
