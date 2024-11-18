@@ -17,7 +17,7 @@ git clone {repository URL}
 npm install
 ```
 
-in case if swagger causes an error install it with the command: 
+in case if swagger causes an error remove "@nestjs/swagger": "^8.0.5" from package.json and install it with the command: 
 
 ```
 npm install @nestjs/swagger --force
