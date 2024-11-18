@@ -30,6 +30,7 @@ export class UserController {
   }
 
   @Post()
+  @HttpCode(201)
   create(@Body(ValidationPipe) createUser: CreateUserDto) {
     return this.userService.create(createUser);
   }
@@ -43,7 +44,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @HttpCode(201)
+  @HttpCode(204)
   delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.delete(id);
   }

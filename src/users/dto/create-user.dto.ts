@@ -13,6 +13,6 @@ export class CreateUserDto {
   password: string;
   
   version: number;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
 }

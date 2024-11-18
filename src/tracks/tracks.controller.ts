@@ -10,7 +10,6 @@ import {
   ValidationPipe,
   HttpCode,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';

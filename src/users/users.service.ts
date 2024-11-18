@@ -15,14 +15,16 @@ export class UserService {
 
   async create(createUser: CreateUserDto) {
     const id = uuidv4();
+    const createTime = new Date().getTime()
     const newUser = {
       id: id,
       login: createUser.login,
       password: createUser.password,
       version: 1,
-      createdAt: new Date().getTime(),
-      updatedAt: new Date().getTime(),
+      createdAt: createTime.toString(),
+      updatedAt: createTime.toString(),
     };
+    // console.log(newUser)
     await this.dbService.user.create({
       data: newUser,
     });
@@ -31,8 +33,8 @@ export class UserService {
       id: id,
       login: newUser.login,
       version: newUser.version,
-      createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt,
+      createdAt: +newUser.createdAt,
+      updatedAt: +newUser.updatedAt,
     };
     return res;
   }
@@ -58,8 +60,8 @@ export class UserService {
       id: user.id,
       login: user.login,
       version: user.version,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      createdAt: +user.createdAt,
+      updatedAt: +user.updatedAt,
     };
     return res;
   }
@@ -73,14 +75,15 @@ export class UserService {
     if (!theUser) throw new NotFoundException('User not found');
     if (theUser.password !== updatedPassword.oldPassword)
       throw new HttpException('Old password is wrong', HttpStatus.FORBIDDEN);
+    const theNow = new Date().getTime()
     await this.dbService.user.update({
       where: {
         id
       },
       data: {
         password: updatedPassword.newPassword,
-        version: theUser.version++,
-        updatedAt: new Date().getTime()
+        version: theUser.version+1,
+        updatedAt: theNow.toString()
       }
     })
 
