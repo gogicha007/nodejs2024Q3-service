@@ -1,6 +1,5 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';

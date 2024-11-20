@@ -7,9 +7,10 @@ import { AlbumsModule } from './albums/albums.module';
 import { ArtistsModule } from './artists/artists.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UserModule, TrackModule, AlbumsModule, ArtistsModule, FavoritesModule, DatabaseModule],
+  imports: [UserModule, TrackModule, AlbumsModule, ArtistsModule, FavoritesModule, DatabaseModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
