@@ -30,6 +30,7 @@ export class UserController {
   }
 
   @Post()
+  @HttpCode(201)
   create(@Body(ValidationPipe) createUser: CreateUserDto) {
     return this.userService.create(createUser);
   }
