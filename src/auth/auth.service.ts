@@ -1,30 +1,56 @@
-import { Injectable } from '@nestjs/common';
-import { Request } from 'express';
-import { User } from '@prisma/client';
+import {
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { LoginUserDto } from './dto/LoginUser.dto';
 import { UserService } from 'src/users/users.service';
 import { DatabaseService } from 'src/database/database.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly dbService: DatabaseService,private readonly userService: UserService) {}
+  constructor(
+    private readonly dbService: DatabaseService,
+    private readonly userService: UserService,
+  ) {}
 
   async signup(createUserDto: CreateUserDto) {
-    
     createUserDto.password = await this.hashPassword(createUserDto.password);
     return await this.userService.create(createUserDto);
   }
 
-  async login(body: { login: string; password: string }) {
-    console.log(body.login);
-    const userExist = await this.dbService.user.findUnique({
-        where: {
-            login: body.login
-        }
-    })
-    if(userExist) console.log(userExist)
-    return body;
+  async login(user: LoginUserDto) {
+    const usersArr = await this.dbService.user.findMany({
+      where: {
+        login: user.login,
+      },
+    });
+    if (usersArr.length === 0)
+      throw new HttpException(
+        'no user with such login, password match actual one',
+        HttpStatus.FORBIDDEN,
+      );
+
+    const promisePasswords = async (arr: User[]) => {
+      const results = await Promise.all(
+        arr.map((val: User) =>
+          this.comparePasswords(user.password, val.password),
+        ),
+      );
+      return arr.filter((_, idx) => results[idx]);
+    };
+
+    const mathingPasswordsArr = await promisePasswords(usersArr);
+    if (mathingPasswordsArr.length === 0)
+      throw new HttpException(
+        'no user with such login, password match actual one',
+        HttpStatus.FORBIDDEN,
+      );
+    return user;
   }
 
   async refresh(request) {}

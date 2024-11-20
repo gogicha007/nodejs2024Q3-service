@@ -1,6 +1,7 @@
-import { Body, Controller, Post, HttpCode, Req } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, Req, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { LoginUserDto } from './dto/LoginUser.dto';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -15,8 +16,8 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
-  async login(@Req() req: Request) {
-    return await this.authService.login(req.body);
+  async login(@Body(ValidationPipe) loginUser: LoginUserDto) {
+    return await this.authService.login(loginUser);
   }
 
   @Post('refresh')
