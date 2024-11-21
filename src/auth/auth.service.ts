@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async signup(createUserDto: CreateUserDto) {
-    createUserDto.password = await this.hashPassword(createUserDto.password);
+    createUserDto.password = await this.hashData(createUserDto.password);
     return await this.userService.create(createUserDto);
   }
 
@@ -48,23 +48,46 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     const logUser = matchingPasswordsArr[0];
-    const accToken = await this.generateJwt(logUser);
-    return accToken;
+
+    //generate passwords
+    const tokens = await this.generateJwt(logUser);
+    return tokens;
   }
 
   async refresh(request) {}
 
   async generateJwt(user: User) {
-    const payload = { sub: user.id, username: user.login };
-    const accToken = {
-      access_token: await this.jwtService.signAsync(payload),
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: user.id,
+          username: user.login,
+        },
+        {
+          secret: process.env.JWT_SECRET_KEY,
+          expiresIn: process.env.TOKEN_EXPIRE_TIME,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: user.id,
+          username: user.login,
+        },
+        {
+          secret: process.env.JWT_SECRET_REFRESH_KEY,
+          expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+        },
+      ),
+    ]);
+    return {
+      access_token: at,
+      refresh_token: rt
     };
-    return accToken;
   }
 
-  async hashPassword(password: string) {
+  async hashData(data: string) {
     const salt = await bcrypt.genSalt(+process.env.CRYPT_SALT);
-    const hashedPass = await bcrypt.hash(password, salt);
+    const hashedPass = await bcrypt.hash(data, salt);
     return hashedPass;
   }
 
