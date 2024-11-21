@@ -1,4 +1,10 @@
-# Home Library Service
+# Home Library Service 2
+
+images uploaded to my docker hub :
+
+![alt text](image.png)
+
+https://hub.docker.com/repositories/gogicha007
 
 ## Prerequisites
 
@@ -17,15 +23,25 @@ git clone {repository URL}
 npm install
 ```
 
+## change repository branch
+
+```
+git checkout dev_hl_2
+```
+
+## .env
+
+rename .env.example to .env
+
 ## Running application
 
 ```
-npm start
+docker compose build
+
+docker compose up
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+This will run 2 docker containers - one with Postgres database, another with NestJS application on ports from .env.
 
 ## Testing
 
@@ -36,37 +52,3 @@ To run all tests without authorization
 ```
 npm run test
 ```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
