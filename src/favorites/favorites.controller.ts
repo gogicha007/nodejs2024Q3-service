@@ -8,7 +8,7 @@ import {
   HttpCode,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { FavoritesService } from './favorites.service';
 
 @Controller('favs')

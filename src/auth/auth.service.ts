@@ -6,6 +6,7 @@ import { UserService } from 'src/users/users.service';
 import { DatabaseService } from 'src/database/database.service';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -51,11 +52,14 @@ export class AuthService {
 
     //generate tokens
     const tokens = await this.generateJwt(logUser);
-    await this.updateRtHash(logUser.id, tokens.refresh_token);
+    await this.updateRtHash(logUser.id, tokens.refreshToken);
     return tokens;
   }
 
-  async refresh(request) {}
+  async refresh(request: Request) {
+    console.log(request.body)
+    return 'refresh'
+  }
 
   async updateRtHash(userId: string, rt: string) {
     const hash = await this.hashData(rt);
@@ -93,8 +97,8 @@ export class AuthService {
       ),
     ]);
     return {
-      access_token: at,
-      refresh_token: rt,
+      accessToken: at,
+      refreshToken: rt,
     };
   }
 

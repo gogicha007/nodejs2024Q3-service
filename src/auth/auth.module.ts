@@ -4,8 +4,8 @@ import { AuthController } from './auth.controller';
 import { UserModule } from 'src/users/users.module';
 import { DatabaseModule } from 'src/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
-import { AtStrategy } from './at.strategy';
-import { RtStrategy } from './rt.strategy';
+import { AtStrategy } from './strategies/at.strategy';
+import { RtStrategy } from './strategies/rt.strategy';
 
 @Module({
   imports: [
