@@ -1,22 +1,20 @@
-import {
-  Injectable,
-  NotFoundException,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from './dto/LoginUser.dto';
 import { UserService } from 'src/users/users.service';
 import { DatabaseService } from 'src/database/database.service';
 import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly dbService: DatabaseService,
     private readonly userService: UserService,
+    private readonly jwtService: JwtService
   ) {}
+
 
   async signup(createUserDto: CreateUserDto) {
     createUserDto.password = await this.hashPassword(createUserDto.password);
@@ -44,16 +42,26 @@ export class AuthService {
       return arr.filter((_, idx) => results[idx]);
     };
 
-    const mathingPasswordsArr = await promisePasswords(usersArr);
-    if (mathingPasswordsArr.length === 0)
+    const matchingPasswordsArr = await promisePasswords(usersArr);
+    if (matchingPasswordsArr.length === 0)
       throw new HttpException(
         'no user with such login, password match actual one',
         HttpStatus.FORBIDDEN,
       );
-    return user;
+    const logUser = matchingPasswordsArr[0];
+    const accToken = await this.generateJwt(logUser)
+    return accToken;
   }
 
   async refresh(request) {}
+
+  async generateJwt(user: User){
+    const payload = { sub: user.id, username: user.login}
+    const accToken = {
+      access_token: await this.jwtService.signAsync(payload)
+    }
+    return accToken 
+  }
 
   async hashPassword(password: string) {
     const salt = await bcrypt.genSalt(+process.env.CRYPT_SALT);
