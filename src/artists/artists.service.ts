@@ -91,7 +91,9 @@ export class ArtistsService {
         id: 0,
       },
       data: {
-        artists: artistsArr.artists.filter((arts) => JSON.parse(arts).id !== id),
+        artists: artistsArr.artists.filter(
+          (arts) => JSON.parse(arts).id !== id,
+        ),
       },
     });
     return removedArtist;

@@ -9,32 +9,36 @@ import {
   ParseUUIDPipe,
   ValidationPipe,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('track')
 export class TracksController {
   constructor(private readonly trackServise: TracksService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   createTrack(@Body(ValidationPipe) createTrack: CreateTrackDto) {
     return this.trackServise.createTrack(createTrack);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.trackServise.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOnde(@Param('id', ParseUUIDPipe) id: string) {
     return this.trackServise.findOne(id);
   }
 
-
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   updateTrack(
     @Param('id', ParseUUIDPipe) id: string,
@@ -43,6 +47,7 @@ export class TracksController {
     return this.trackServise.updateTrack(id, updateTrack);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   deleteTrack(@Param('id', ParseUUIDPipe) id: string) {

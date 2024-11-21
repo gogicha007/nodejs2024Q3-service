@@ -152,7 +152,9 @@ export class FavoritesService {
         id: 0,
       },
       data: {
-        artists: artistsArr.artists.filter((artist) => JSON.parse(artist).id !== id),
+        artists: artistsArr.artists.filter(
+          (artist) => JSON.parse(artist).id !== id,
+        ),
       },
     });
     return artistToRemove;

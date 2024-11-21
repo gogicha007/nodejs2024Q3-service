@@ -6,7 +6,7 @@ export class CreateTrackDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-  
+
   @ApiProperty()
   @IsInt()
   @IsNotEmpty()
@@ -15,7 +15,7 @@ export class CreateTrackDto {
   @ApiProperty()
   @IsOptional()
   artistId: string | null;
-  
+
   @ApiProperty()
   @IsOptional()
   albumId: string | null;

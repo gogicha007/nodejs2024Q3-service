@@ -60,8 +60,8 @@ export class AlbumsService {
         id,
       },
     });
-    
-    // update tracks 
+
+    // update tracks
     await this.dbService.track.updateMany({
       where: {
         albumId: id,

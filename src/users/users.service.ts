@@ -15,7 +15,7 @@ export class UserService {
 
   async create(createUser: CreateUserDto) {
     const id = uuidv4();
-    const createTime = new Date().getTime()
+    const createTime = new Date().getTime();
     const newUser = {
       id: id,
       login: createUser.login,
@@ -69,22 +69,22 @@ export class UserService {
     const theUser = await this.dbService.user.findUnique({
       where: {
         id,
-      }
+      },
     });
     if (!theUser) throw new NotFoundException('User not found');
     if (theUser.password !== updatedPassword.oldPassword)
       throw new HttpException('Old password is wrong', HttpStatus.FORBIDDEN);
-    const theNow = new Date().getTime()
+    const theNow = new Date().getTime();
     await this.dbService.user.update({
       where: {
-        id
+        id,
       },
       data: {
         password: updatedPassword.newPassword,
-        version: theUser.version+1,
-        updatedAt: theNow.toString()
-      }
-    })
+        version: theUser.version + 1,
+        updatedAt: theNow.toString(),
+      },
+    });
 
     return this.findOne(id);
   }
@@ -96,7 +96,7 @@ export class UserService {
       where: {
         id,
       },
-    })
+    });
     return removedUser;
   }
 }

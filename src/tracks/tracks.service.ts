@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
+// import { UpdateTrackDto } from './dto/update-track.dto';
 
 @Injectable()
 export class TracksService {
@@ -59,8 +59,8 @@ export class TracksService {
     await this.dbService.track.delete({
       where: {
         id,
-      }
-    })
+      },
+    });
 
     // update favorites
     const tracksArr = await this.dbService.favorites.findFirst({

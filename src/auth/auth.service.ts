@@ -12,9 +12,8 @@ export class AuthService {
   constructor(
     private readonly dbService: DatabaseService,
     private readonly userService: UserService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
-
 
   async signup(createUserDto: CreateUserDto) {
     createUserDto.password = await this.hashPassword(createUserDto.password);
@@ -49,18 +48,18 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     const logUser = matchingPasswordsArr[0];
-    const accToken = await this.generateJwt(logUser)
+    const accToken = await this.generateJwt(logUser);
     return accToken;
   }
 
   async refresh(request) {}
 
-  async generateJwt(user: User){
-    const payload = { sub: user.id, username: user.login}
+  async generateJwt(user: User) {
+    const payload = { sub: user.id, username: user.login };
     const accToken = {
-      access_token: await this.jwtService.signAsync(payload)
-    }
-    return accToken 
+      access_token: await this.jwtService.signAsync(payload),
+    };
+    return accToken;
   }
 
   async hashPassword(password: string) {
