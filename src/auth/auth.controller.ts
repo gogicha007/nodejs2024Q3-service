@@ -34,9 +34,8 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   @Post('refresh')
   @HttpCode(200)
-  async refresh(@Req() req: Request) {
-    const user = req.user
+  async refresh(@Req() {user, body}: Request) {
     console.log(user)
-    return await this.authService.refresh(req.body);
+    return await this.authService.refresh(user['sub'], body.refreshToken);
   }
 }

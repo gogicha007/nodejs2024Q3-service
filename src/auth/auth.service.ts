@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from './dto/LoginUser.dto';
@@ -6,7 +6,7 @@ import { UserService } from 'src/users/users.service';
 import { DatabaseService } from 'src/database/database.service';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
+
 
 @Injectable()
 export class AuthService {
@@ -56,8 +56,10 @@ export class AuthService {
     return tokens;
   }
 
-  async refresh(request: Request) {
-    console.log(request.body)
+  async refresh(userId: string, refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token was provided');
+    }
     return 'refresh'
   }
 
