@@ -5,7 +5,9 @@ import {
   HttpCode,
   Req,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from './dto/LoginUser.dto';
@@ -27,6 +29,7 @@ export class AuthController {
     return await this.authService.login(loginUser);
   }
 
+  @UseGuards(AuthGuard('jwt-refresh'))
   @Post('refresh')
   @HttpCode(200)
   async refresh(@Req() req: Request) {

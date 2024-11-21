@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   ValidationPipe,
   HttpCode,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ArtistsService } from './artists.service';

@@ -49,12 +49,25 @@ export class AuthService {
       );
     const logUser = matchingPasswordsArr[0];
 
-    //generate passwords
+    //generate tokens
     const tokens = await this.generateJwt(logUser);
+    await this.updateRtHash(logUser.id, tokens.refresh_token);
     return tokens;
   }
 
   async refresh(request) {}
+
+  async updateRtHash(userId: string, rt: string) {
+    const hash = await this.hashData(rt);
+    await this.dbService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refresh_token: hash,
+      },
+    });
+  }
 
   async generateJwt(user: User) {
     const [at, rt] = await Promise.all([
@@ -81,7 +94,7 @@ export class AuthService {
     ]);
     return {
       access_token: at,
-      refresh_token: rt
+      refresh_token: rt,
     };
   }
 
