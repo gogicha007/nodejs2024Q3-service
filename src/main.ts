@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LoggingService } from './logging/logging.service';
 import { LoggingInterceptor } from './logging.interceptor';
 import * as dotenv from 'dotenv';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 dotenv.config();
 
@@ -24,10 +25,12 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, documentFactory);
 
+  
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
-  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalInterceptors(new LoggingInterceptor(new LoggingService()));
+  app.useGlobalFilters(new HttpExceptionFilter(new LoggingService()))
   app.useLogger(app.get(LoggingService))
 
   await app.listen(PORT);
