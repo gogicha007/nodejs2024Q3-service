@@ -8,11 +8,9 @@ import { ArtistsModule } from './artists/artists.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
-// import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    // JwtModule.register({global: true, secret: process.env.JWT_SECRET_KEY}),
     UserModule,
     TrackModule,
     AlbumsModule,

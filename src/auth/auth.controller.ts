@@ -5,15 +5,12 @@ import {
   HttpCode,
   Req,
   ValidationPipe,
-  UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 import { Request } from 'express';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from './dto/LoginUser.dto';
 import { AuthService } from './auth.service';
-import { RefreshTokenGuard } from './guards/refresh-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -31,11 +28,10 @@ export class AuthController {
     return await this.authService.login(loginUser);
   }
 
-  @UseGuards(RefreshTokenGuard)
   @Post('refresh')
   @HttpCode(200)
-  async refresh(@Req() {user, body}: Request) {
-    console.log(user)
-    return await this.authService.refresh(user['sub'], body.refreshToken);
+  async refresh(@Req() { body }: Request) {
+    console.log(body);
+    return await this.authService.refresh(body.refreshToken);
   }
 }

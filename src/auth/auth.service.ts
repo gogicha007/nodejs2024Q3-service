@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from './dto/LoginUser.dto';
@@ -6,7 +6,6 @@ import { UserService } from 'src/users/users.service';
 import { DatabaseService } from 'src/database/database.service';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-
 
 @Injectable()
 export class AuthService {
@@ -51,16 +50,21 @@ export class AuthService {
     const logUser = matchingPasswordsArr[0];
 
     //generate tokens
-    const tokens = await this.generateJwt(logUser);
+    const tokens = await this.generateJwt(logUser.id, logUser.login);
     await this.updateRtHash(logUser.id, tokens.refreshToken);
     return tokens;
   }
 
-  async refresh(userId: string, refreshToken: string) {
-    if (!refreshToken) {
-      throw new UnauthorizedException('No refresh token was provided');
-    }
-    return 'refresh'
+  async refresh(token: string) {
+    const payload = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET_REFRESH_KEY,
+    });
+    const { login, sub } = payload;
+
+    const tokens = await this.generateJwt(sub, login);
+    await this.updateRtHash(sub, tokens.refreshToken);
+
+    return tokens;
   }
 
   async updateRtHash(userId: string, rt: string) {
@@ -75,12 +79,12 @@ export class AuthService {
     });
   }
 
-  async generateJwt(user: User) {
+  async generateJwt(id: string, login: string) {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {
-          sub: user.id,
-          username: user.login,
+          sub: id,
+          username: login,
         },
         {
           secret: process.env.JWT_SECRET_KEY,
@@ -89,8 +93,8 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         {
-          sub: user.id,
-          username: user.login,
+          sub: id,
+          username: login,
         },
         {
           secret: process.env.JWT_SECRET_REFRESH_KEY,
