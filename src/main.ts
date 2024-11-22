@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import { LoggingService } from './logging/logging.service';
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ async function bootstrap() {
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
 
+  app.useLogger(app.get(LoggingService))
+  
   await app.listen(PORT);
 }
 
