@@ -2,15 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as dotenv from 'dotenv';
 import { LoggingService } from './logging/logging.service';
+import { LoggingInterceptor } from './logging.interceptor';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
 const PORT = Number(process.env.PORT) || 4000;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
@@ -24,9 +27,9 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
-
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.useLogger(app.get(LoggingService))
-  
+
   await app.listen(PORT);
 }
 

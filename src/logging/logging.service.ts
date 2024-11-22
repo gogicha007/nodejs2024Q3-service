@@ -16,6 +16,7 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'log' level log.
    */
   log(message: any) {
+    console.log('log gogicha',message)
     super.log(message);
   }
 
@@ -23,6 +24,7 @@ export class LoggingService extends ConsoleLogger {
    * Write an 'error' level log.
    */
   error(message: any) {
+    console.log('error gogicha', message)
     super.error(message);
   }
 
@@ -30,6 +32,7 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'warn' level log.
    */
   warn(message: any) {
+    console.log('warn gogicha', message)
     super.warn(message);
   }
 
@@ -37,6 +40,7 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'debug' level log.
    */
   debug(message: any) {
+    console.log('debug gogicha', message)
     super.warn(message);
   }
 
@@ -44,6 +48,7 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'verbose' level log.
    */
   verbose(message: any) {
+    console.log('verbose gogicha', message)
     super.verbose(message);
   }
 
