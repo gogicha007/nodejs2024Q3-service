@@ -1,4 +1,4 @@
-# Home Library Service 2
+# Home Library Service 3
 
 images uploaded to my docker hub :
 
@@ -45,8 +45,16 @@ This will run 2 docker containers - one with Postgres database, another with Nes
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
+To run all test with authorization
 
 ```
-npm run test
+npm run test:auth
 ```
+
+
+## features
+
+### logging in files
+
+log directory located in root. errors and other logs are saved separately in errors.log and logs.log files. After reaching max size defined in .env the log files are archived in separate files with extensions .error and .log.
+
