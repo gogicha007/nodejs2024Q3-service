@@ -3,7 +3,11 @@ import * as fs from 'node:fs';
 import { promises as fsPromises } from 'node:fs';
 import * as path from 'node:path';
 import { LogLevel } from '@nestjs/common/services/logger.service';
-import { MAX_LOG_LEVEL, DEFAULT_LOG_LEVEL, LOG_LEVELS } from 'src/app.const';
+import {
+  MAX_LOG_LEVEL,
+  DEFAULT_LOG_LEVEL,
+  LOG_LEVELS,
+} from 'src/app.constants';
 
 @Injectable()
 export class LoggingService extends ConsoleLogger {
@@ -58,7 +62,7 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'log' level log.
    */
   log(message: any, context?: string) {
-    const entry = `log: ${context ? context : ''}\t${message}`;
+    const entry = `log: ${message}\t${context ? context : ''}`;
     this.logToFile('log', entry);
     super.log(message, context);
   }
