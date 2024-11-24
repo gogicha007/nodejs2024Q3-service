@@ -3,27 +3,43 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoggingService } from './logging/logging.service';
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
+@Catch()
+export class CatchEvenythingFilter implements ExceptionFilter {
   constructor(private loggingService: LoggingService) {}
 
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const responseObj = {
+
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message = 'Internal Server Error';
+
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      message = exception.message;
+      this.loggingService.error(
+        LoggingService.objectToString({
+          statusCode: status,
+          message: message,
+          timestamp: new Date().toISOString(),
+          path: request.url,
+        }),
+      );
+    } else {
+      this.loggingService.error(`Unexpected error occurred,${exception}`);
+    }
+
+    response.status(status).json({
       statusCode: status,
-      message: exception.message,
+      message,
       timestamp: new Date().toISOString(),
       path: request.url,
-    };
-    response.status(status).json(responseObj);
-
-    this.loggingService.error(LoggingService.objectToString(responseObj));
+    });
   }
 }

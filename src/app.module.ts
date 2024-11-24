@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { LoggingModule } from './logging/logging.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logging.interceptor';
-import { HttpExceptionFilter } from './http-exception.filter';
+import { CatchEvenythingFilter } from './http-exception.filter';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { HttpExceptionFilter } from './http-exception.filter';
   controllers: [AppController],
   providers: [
     AppService,
-    { provide: APP_FILTER, useClass: HttpExceptionFilter },
+    { provide: APP_FILTER, useClass: CatchEvenythingFilter },
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
