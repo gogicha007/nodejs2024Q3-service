@@ -26,6 +26,10 @@ export class LoggingInterceptor implements NestInterceptor {
     const now = Date.now();
     return next
       .handle()
-      .pipe(tap((responseBody) => this.loggingService.log(ctx, JSON.stringify(responseBody))));
+      .pipe(
+        tap((responseBody) =>
+          this.loggingService.log(ctx, JSON.stringify(responseBody)),
+        ),
+      );
   }
 }

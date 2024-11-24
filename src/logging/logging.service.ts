@@ -1,7 +1,7 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import { promises as fsPromises } from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import { promises as fsPromises } from 'node:fs';
+import * as path from 'node:path';
 import { LogLevel } from '@nestjs/common/services/logger.service';
 import { MAX_LOG_LEVEL, DEFAULT_LOG_LEVEL, LOG_LEVELS } from 'src/app.const';
 
@@ -16,21 +16,39 @@ export class LoggingService extends ConsoleLogger {
     );
   }
 
-  async logToFile(entry) {
+  async logToFile(level: string, entry: any) {
     const formattedEntry = `${Intl.DateTimeFormat('en-US', {
       dateStyle: 'short',
       timeStyle: 'short',
-      timeZone: 'America/Chicago',
+      timeZone: 'Asia/Tbilisi',
     }).format(new Date())}\t${entry}\n`;
 
+    const logsDir = path.join(__dirname, '..', '..', 'logs');
+
     try {
-      if (!fs.existsSync(path.join(__dirname, '..', '..', 'logs'))) {
-        await fsPromises.mkdir(path.join(__dirname, '..', '..', 'logs'));
+      if (!fs.existsSync(logsDir)) {
+        await fsPromises.mkdir(logsDir);
       }
-      await fsPromises.appendFile(
-        path.join(__dirname, '..', '..', 'logs', 'myLogFile.log'),
-        formattedEntry,
+      const logFName = 'logs.log';
+      const errFName = 'errors.log';
+      const fileName = path.join(
+        logsDir,
+        level !== 'error' ? logFName : errFName,
       );
+
+      if (fs.existsSync(fileName)) {
+        const stats = await fsPromises.stat(fileName);
+        if (
+          stats.size + Buffer.byteLength(entry) >=
+          +process.env.LOG_MAX_FILE_SIZE
+        ) {
+          const logArc = `${new Date().getTime()}.${level}`;
+          await fsPromises.copyFile(fileName, path.join(logsDir, logArc));
+          await fsPromises.truncate(fileName);
+        }
+      }
+
+      await fsPromises.appendFile(fileName, formattedEntry);
     } catch (e) {
       if (e instanceof Error) console.error(e.message);
     }
@@ -41,7 +59,7 @@ export class LoggingService extends ConsoleLogger {
    */
   log(message: any, context?: string) {
     const entry = `log: ${context ? context : ''}\t${message}`;
-    this.logToFile(entry)
+    this.logToFile('log', entry);
     super.log(message, context);
   }
 
@@ -50,7 +68,7 @@ export class LoggingService extends ConsoleLogger {
    */
   error(message: any, stackOrContext?: string) {
     const entry = `error: ${stackOrContext ? stackOrContext : ''}\t${message}`;
-    this.logToFile(entry)
+    this.logToFile('error', entry);
     super.error(message, stackOrContext);
   }
 
@@ -58,7 +76,8 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'warn' level log.
    */
   warn(message: any) {
-    console.log('warn gogicha', message);
+    const entry = `warn: ${message}`;
+    this.logToFile('warn', entry);
     super.warn(message);
   }
 
@@ -66,7 +85,8 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'debug' level log.
    */
   debug(message: any) {
-    console.log('debug gogicha', message);
+    const entry = `debug: ${message}`;
+    this.logToFile('debug', entry);
     super.warn(message);
   }
 
@@ -74,7 +94,8 @@ export class LoggingService extends ConsoleLogger {
    * Write a 'verbose' level log.
    */
   verbose(message: any) {
-    console.log('verbose gogicha', message);
+    const entry = `verbose: ${message}`;
+    this.logToFile('warn', entry);
     super.verbose(message);
   }
 

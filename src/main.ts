@@ -25,13 +25,12 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, documentFactory);
 
-  
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
   app.useGlobalInterceptors(new LoggingInterceptor(new LoggingService()));
-  app.useGlobalFilters(new HttpExceptionFilter(new LoggingService()))
-  app.useLogger(app.get(LoggingService))
+  app.useGlobalFilters(new HttpExceptionFilter(new LoggingService()));
+  app.useLogger(app.get(LoggingService));
 
   await app.listen(PORT);
 }

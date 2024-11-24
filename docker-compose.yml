@@ -34,6 +34,7 @@ services:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - pglog:/var/log/postgresql
     networks:
       - home-library
 
@@ -53,6 +54,7 @@ services:
 
 volumes:
   pgdata:
+  pglog:
 
 networks:
   home-library:
